@@ -6,7 +6,7 @@ namespace Example.MineSweeper
 {
     public class Board
     {
-        private Cell[,] Cells { get; }
+        private BoardCell[,] Cells { get; }
         private Random Random { get; }
         private int MineThreshold { get; }
 
@@ -16,7 +16,7 @@ namespace Example.MineSweeper
         public int MineCount { get; private set; }
         public int HiddenCount { get; private set; }
 
-        public Cell this[int x, int y]
+        public BoardCell this[int x, int y]
         {
             get
             {
@@ -27,7 +27,7 @@ namespace Example.MineSweeper
 
         public Board(int width, int height, float fill)
         {
-            Cells = new Cell[width, height];
+            Cells = new BoardCell[width, height];
             Random = new Random();
             MineThreshold = (int)(fill * 100);
         }
@@ -42,7 +42,7 @@ namespace Example.MineSweeper
                 for (int y = 0; y < Cells.GetLength(1); y++)
                 {
                     if (Cells[x, y] is null)
-                        Cells[x, y] = new Cell();
+                        Cells[x, y] = new BoardCell();
                     else
                         Cells[x, y].MineCount = 0;
                 }
@@ -93,7 +93,7 @@ namespace Example.MineSweeper
                         Cells[x, y].IsRevealed = true;
         }
 
-        private void RevealCell(Cell cell)
+        private void RevealCell(BoardCell cell)
         {
             if (cell.IsRevealed)
                 return;
@@ -215,7 +215,7 @@ namespace Example.MineSweeper
 
 
 
-        private char GetCellCharacter(Cell cell)
+        private char GetCellCharacter(BoardCell cell)
         {
             if (cell.IsMarked)
                 return 'X';

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Example.MineSweeper
 {
-    public class Cell
+    public class BoardCell
     {
         public byte MineCount { get; set; } = 0;
         public bool IsRevealed { get; set; } = false;
