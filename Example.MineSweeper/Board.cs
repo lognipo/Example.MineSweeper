@@ -162,21 +162,7 @@ namespace Example.MineSweeper
             cell.IsMarked = !cell.IsMarked;
         }
 
-        public string GetBoardString()
-        {
-            var builder = new StringBuilder();
-
-            for (int y = 0; y < Cells.GetLength(1); y++)
-            {
-                for (int x = 0; x < Cells.GetLength(0); x++)
-                {
-                    builder.Append(GetCellCharacter(Cells[x, y]));
-                }
-                builder.Append("\r\n");
-            }
-
-            return builder.ToString();
-        }
+        
 
         private int Clamp(int num, int dim)
         {
@@ -216,22 +202,7 @@ namespace Example.MineSweeper
 
 
 
-        private char GetCellCharacter(BoardCell cell)
-        {
-            if (cell.IsMarked)
-                return 'X';
 
-            if (!cell.IsRevealed)
-                return '.';
-
-            if (cell.HasMine)
-                return '*';
-
-            if (cell.MineCount == 0)
-                return ' ';
-
-            return cell.MineCount.ToString()[0];
-        }
 
     }
 }

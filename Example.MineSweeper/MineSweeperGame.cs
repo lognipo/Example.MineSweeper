@@ -6,18 +6,20 @@ namespace Example.MineSweeper
 {
     public class MineSweeperGame
     {
-        private Board Board { get; }
-        private BoardCursor Cursor { get; }
+        public Board Board { get; }
+        public BoardCursor Cursor { get; }
+        private IGraphics Graphics { get; }
         private Dictionary<ConsoleKey, Action> KeyBindings { get; }
 
         private bool IsPlaying { get; set; }
-        private bool HasFailed { get; set; }
-        private bool HasWon { get; set; }
+        public bool HasFailed { get; set; }
+        public bool HasWon { get; set; }
 
-        public MineSweeperGame(int width, int height, float fill)
+        public MineSweeperGame(IGraphics graphics, Board board)
         {
-            Board = new Board(width, height, fill);
+            Board = board;
             Cursor = new BoardCursor(Board);
+            Graphics = graphics;
 
             KeyBindings = new Dictionary<ConsoleKey, Action>
             {
@@ -79,7 +81,7 @@ namespace Example.MineSweeper
             }
         }
 
-        private string GetGameStateText()
+        public string GetGameStateText()
         {
             if (HasFailed)
                 return "Esc: Quit\r\nR: Reset\r\n\r\nGAME OVER!";
@@ -91,48 +93,6 @@ namespace Example.MineSweeper
         }
 
 
-        private int GetLineCount(string text)
-        {
-            int count = 0,
-                nextIndex = 0,
-                lastIndex;
-
-            while(nextIndex >= 0 && nextIndex < text.Length)
-            {
-                lastIndex = text.IndexOf("\r\n", nextIndex);
-                if (lastIndex == -1)
-                    break;
-
-                count++;
-                nextIndex = lastIndex + 2;
-            }
-
-            return count + 1;
-        }
-
-        private void DrawBoard()
-        {
-            var stateText = GetGameStateText() + "\r\n";
-            var stateTextLineCount = GetLineCount(stateText);
-
-            Console.Clear();
-
-            // status text
-            Console.ForegroundColor = 
-                HasFailed ? ConsoleColor.Red
-                : HasWon ? ConsoleColor.Blue
-                : ConsoleColor.Yellow;
-            Console.WriteLine(stateText);
-
-            // board text
-            Console.ForegroundColor = 
-                HasFailed ? ConsoleColor.Red
-                : HasWon ? ConsoleColor.Cyan
-                : ConsoleColor.White;
-            Console.WriteLine(Board.GetBoardString());
-
-            Console.SetCursorPosition(Cursor.X, Cursor.Y + stateTextLineCount);
-        }
 
         public void Play()
         {
@@ -142,7 +102,9 @@ namespace Example.MineSweeper
             IsPlaying = true;
             while(IsPlaying)
             {
-                DrawBoard();
+                Graphics.Draw(this);
+
+                Console.SetCursorPosition(Cursor.X, Cursor.Y + Graphics.BoardOffsetY);
 
                 var key = Console.ReadKey(true).Key;
 
