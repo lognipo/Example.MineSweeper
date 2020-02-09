@@ -77,7 +77,7 @@ namespace Example.MineSweeper
 
         private int GetLineCount(string text)
         {
-            int count = 0,
+            int count = 1,
                 nextIndex = 0,
                 lastIndex;
 
@@ -91,7 +91,7 @@ namespace Example.MineSweeper
                 nextIndex = lastIndex + 2;
             }
 
-            return count + 1;
+            return count;
         }
 
 

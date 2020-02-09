@@ -8,7 +8,7 @@ namespace Example.MineSweeper
     {
         private BoardCell[,] Cells { get; }
         private Random Random { get; }
-        private int MineThreshold { get; }
+        private double Fill { get; }
 
         public int Width => Cells.GetLength(0);
         public int Height => Cells.GetLength(1);
@@ -25,11 +25,11 @@ namespace Example.MineSweeper
             }
         }
 
-        public Board(int width, int height, float fill)
+        public Board(int width, int height, double fill)
         {
             Cells = new BoardCell[width, height];
             Random = new Random();
-            MineThreshold = (int)(fill * 100);
+            Fill = fill;
         }
 
         public void Reset()
@@ -55,7 +55,7 @@ namespace Example.MineSweeper
 
                     cell.IsRevealed = false;
                     cell.IsMarked = false;
-                    cell.HasMine = Random.Next(0, 100) < MineThreshold;
+                    cell.HasMine = Random.NextDouble() < Fill;
 
                     if (cell.HasMine)
                     {
