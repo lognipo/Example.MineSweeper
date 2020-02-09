@@ -17,6 +17,8 @@ namespace Example.MineSweeper
 
         private bool SkipRedraw { get; set; }
 
+        private bool CanPlay => IsPlaying & !HasFailed & !HasWon;
+
         public MineSweeperGame(IGraphics graphics, Board board)
         {
             Board = board;
@@ -59,7 +61,7 @@ namespace Example.MineSweeper
         private void ToggleMark()
         {
             // we can't mark if we fail
-            if (HasFailed | HasWon)
+            if (!CanPlay)
                 return;
 
             Board.ToggleMark(Cursor.X, Cursor.Y);
@@ -68,7 +70,7 @@ namespace Example.MineSweeper
         private void Reveal()
         {
             // we can't reveal cells after we fail
-            if (HasFailed | HasWon)
+            if (!CanPlay)
                 return;
 
             var cell = Board[Cursor.X, Cursor.Y];
