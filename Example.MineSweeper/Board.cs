@@ -92,15 +92,26 @@ namespace Example.MineSweeper
             for (int x = 0; x < Cells.GetLength(0); x++)
                 for (int y = 0; y < Cells.GetLength(1); y++)
                     if (Cells[x, y].HasMine)
-                        Cells[x, y].IsRevealed = true;
+                        RevealCell(Cells[x, y]);
         }
 
         private void RevealCell(BoardCell cell)
         {
+            // we only reveal once
             if (cell.IsRevealed)
                 return;
 
+            // we do not reveal marked cells
+            if (cell.IsMarked)
+                return;
+
             cell.IsRevealed = true;
+
+            // we do not count revealed mines
+            if (cell.HasMine)
+                return;
+
+            // count is used to determine when the game is won
             HiddenCount--;
         }
 
