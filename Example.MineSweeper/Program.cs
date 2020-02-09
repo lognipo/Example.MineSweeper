@@ -6,7 +6,7 @@ namespace Example.MineSweeper
     {
         static void Main(string[] args)
         {
-            var game = new MineSweeperGame(64, 32, 0.1f);
+            var game = new MineSweeperGame(10, 10, 0.05f);
             game.Play();
         }
     }

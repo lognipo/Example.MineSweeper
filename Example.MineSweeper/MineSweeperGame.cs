@@ -35,6 +35,7 @@ namespace Example.MineSweeper
         public void Reset()
         {
             HasFailed = false;
+            HasWon = false;
             Board.Reset();
             Cursor.Reset();
         }
@@ -83,6 +84,9 @@ namespace Example.MineSweeper
             if (HasFailed)
                 return "Esc: Quit\r\nR: Reset\r\n\r\nGAME OVER!";
 
+            if (HasWon)
+                return "Esc: Quit\r\nR: Reset\r\n\r\nA WINNER IS YOU!";
+
             return "Arrows: Move Cursor\r\nSpace: Reveal/Clear\r\nM: Mark\r\nEsc: Quit\r\nR: Reset\r\n\r\nCHOOSE WISELY";
         }
 
@@ -115,15 +119,15 @@ namespace Example.MineSweeper
 
             // status text
             Console.ForegroundColor = 
-                HasFailed
-                ? ConsoleColor.Red
+                HasFailed ? ConsoleColor.Red
+                : HasWon ? ConsoleColor.Blue
                 : ConsoleColor.Yellow;
             Console.WriteLine(stateText);
 
             // board text
             Console.ForegroundColor = 
-                HasFailed
-                ? ConsoleColor.Red
+                HasFailed ? ConsoleColor.Red
+                : HasWon ? ConsoleColor.Cyan
                 : ConsoleColor.White;
             Console.WriteLine(Board.GetBoardString());
 
