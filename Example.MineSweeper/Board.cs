@@ -112,6 +112,7 @@ namespace Example.MineSweeper
 
             while(processing.Count > 0)
             {
+                // get the next cell from the queue
                 var coord = processing.Dequeue();
                 var cell = Cells[coord.X, coord.Y];
 
