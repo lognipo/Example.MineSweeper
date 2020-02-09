@@ -6,20 +6,20 @@ namespace Example.MineSweeper
 {
     public class BoardCursor
     {
-        private Board Board { get; }
+        private CoordinateManager2D Coordinates { get; }
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public BoardCursor(Board board)
+        public BoardCursor(CoordinateManager2D coordinates)
         {
-            Board = board;
+            Coordinates = coordinates;
             Reset();
         }
 
         public void SetPosition(int x, int y)
         {
-            X = Board.WrapX(x);
-            Y = Board.WrapY(y);
+            X = Coordinates.WrapX(x);
+            Y = Coordinates.WrapY(y);
         }
 
         public void MoveLeft() => SetPosition(X - 1, Y);
@@ -27,6 +27,6 @@ namespace Example.MineSweeper
         public void MoveUp() => SetPosition(X, Y - 1);
         public void MoveDown() => SetPosition(X, Y + 1);
 
-        public void Reset() => SetPosition(Board.Width / 2, Board.Height / 2);
+        public void Reset() => SetPosition(Coordinates.Width / 2, Coordinates.Height / 2);
     }
 }

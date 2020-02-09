@@ -20,7 +20,7 @@ namespace Example.MineSweeper
         public MineSweeperGame(IGraphics graphics, Board board)
         {
             Board = board;
-            Cursor = new BoardCursor(Board);
+            Cursor = new BoardCursor(Board.Coordinates);
             Graphics = graphics;
 
             Action NoRedraw(Action action) =>
@@ -59,7 +59,7 @@ namespace Example.MineSweeper
         private void ToggleMark()
         {
             // we can't mark if we fail
-            if (HasFailed)
+            if (HasFailed | HasWon)
                 return;
 
             Board.ToggleMark(Cursor.X, Cursor.Y);
@@ -68,7 +68,7 @@ namespace Example.MineSweeper
         private void Reveal()
         {
             // we can't reveal cells after we fail
-            if (HasFailed)
+            if (HasFailed | HasWon)
                 return;
 
             var cell = Board[Cursor.X, Cursor.Y];

@@ -10,6 +10,8 @@ namespace Example.MineSweeper
         private Random Random { get; }
         private double Fill { get; }
 
+        public CoordinateManager2D Coordinates { get; }
+
         public int Width => Cells.GetLength(0);
         public int Height => Cells.GetLength(1);
 
@@ -20,7 +22,7 @@ namespace Example.MineSweeper
         {
             get
             {
-                ValidateCoordinates(x, y);
+                Coordinates.ValidateCoordinates(x, y);
                 return Cells[x, y];
             }
         }
@@ -28,8 +30,10 @@ namespace Example.MineSweeper
         public Board(int width, int height, double fill)
         {
             Cells = new BoardCell[width, height];
+            Coordinates = new CoordinateManager2D(Cells);
             Random = new Random();
             Fill = fill;
+            
         }
 
         public void Reset()
@@ -65,12 +69,10 @@ namespace Example.MineSweeper
                 }
         }
 
-        public int ClampX(int x) => Clamp(x, 0);
-        public int ClampY(int y) => Clamp(y, 1);
 
         public void Reveal(int x, int y)
         {
-            ValidateCoordinates(x, y);
+            Coordinates.ValidateCoordinates(x, y);
             var cell = Cells[x, y];
 
             // only reveal once
@@ -102,8 +104,9 @@ namespace Example.MineSweeper
             HiddenCount--;
         }
 
-        private (int Min, int Max) GetMinMax(int num, int dim) =>
-            (Clamp(num - 1, dim), Clamp(num + 1, dim));
+        private (int Min, int Max) GetAdjacentLoopBounds(int num, int dim) =>
+            (Coordinates.Clamp(num - 1, Cells.GetUpperBound(dim)),
+             Coordinates.Clamp(num + 1, Cells.GetUpperBound(dim)));
 
         private void RevealZeroCounts(int x, int y)
         {
@@ -128,8 +131,8 @@ namespace Example.MineSweeper
                     continue;
 
                 // queue neighbors for processing
-                var (minX, maxX) = GetMinMax(coord.X, 0);
-                var (minY, maxY) = GetMinMax(coord.Y, 1);
+                var (minX, maxX) = GetAdjacentLoopBounds(coord.X, 0);
+                var (minY, maxY) = GetAdjacentLoopBounds(coord.Y, 1);
 
                 for (int ix = minX; ix <= maxX; ix++)
                     for(int iy = minY; iy <= maxY; iy++)
@@ -152,7 +155,7 @@ namespace Example.MineSweeper
 
         public void ToggleMark(int x, int y)
         {
-            ValidateCoordinates(x, y);
+            Coordinates.ValidateCoordinates(x, y);
             var cell = Cells[x, y];
 
             // no marking revealed cells
@@ -164,36 +167,15 @@ namespace Example.MineSweeper
 
         
 
-        private int Clamp(int num, int dim)
-        {
-            if (num < 0)
-                return 0;
-
-            var bound = Cells.GetUpperBound(dim);
-            if (num > bound)
-                return bound;
-
-            return num;
-        }
 
 
-        public int WrapX(int x) => Wrap(x, Cells.GetLength(0));
-        public int WrapY(int y) => Wrap(y, Cells.GetLength(1));
-        private int Wrap(int num, int size)
-        {
-            if (num < 0)
-                return size + (num % size);
 
-            if (num >= size)
-                return num % size;
 
-            return num;
-        }
 
         private void IncrementMineCountsAround(int x, int y)
         {
-            var (minX, maxX) = GetMinMax(x, 0);
-            var (minY, maxY) = GetMinMax(y, 1);
+            var (minX, maxX) = GetAdjacentLoopBounds(x, 0);
+            var (minY, maxY) = GetAdjacentLoopBounds(y, 1);
 
             for (int ix = minX; ix <= maxX; ix++)
                 for (int iy = minY; iy <= maxY; iy++)
@@ -205,14 +187,7 @@ namespace Example.MineSweeper
                 }
         }
 
-        private void ValidateCoordinates(int x, int y)
-        {
-            if (x < 0 || x > Cells.GetUpperBound(0))
-                throw new IndexOutOfRangeException($"X ({x}) must be between 0 and {Cells.GetUpperBound(0)}.");
 
-            if (y < 0 || y > Cells.GetUpperBound(0))
-                throw new IndexOutOfRangeException($"Y ({y}) must be between 0 and {Cells.GetUpperBound(1)}.");
-        }
 
 
 
