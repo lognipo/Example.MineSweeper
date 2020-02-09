@@ -148,7 +148,13 @@ namespace Example.MineSweeper
         public void ToggleMark(int x, int y)
         {
             ValidateCoordinates(x, y);
-            Cells[x, y].IsMarked = !Cells[x, y].IsMarked;
+            var cell = Cells[x, y];
+
+            // no marking revealed cells
+            if (cell.IsRevealed)
+                return;
+
+            cell.IsMarked = !cell.IsMarked;
         }
 
         public string GetBoardString()
