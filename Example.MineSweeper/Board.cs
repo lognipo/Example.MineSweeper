@@ -51,7 +51,7 @@ namespace Example.MineSweeper
             for (int x = 0; x < Cells.GetLength(0); x++)
                 for (int y = 0; y < Cells.GetLength(1); y++)
                 {
-                    ref var cell = ref Cells[x, y];
+                    var cell = Cells[x, y];
 
                     cell.IsRevealed = false;
                     cell.IsMarked = false;
