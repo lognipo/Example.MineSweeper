@@ -64,7 +64,9 @@ namespace Example.MineSweeper
                     if (cell.HasMine)
                     {
                         MineCount++;
-                        IncrementMineCountsAround(x, y);
+
+                        // increment mine counts in adjacent cells
+                        ProcessAdjacentCells(x, y, (x, y) => Cells[x, y].MineCount++);
                     }
                 }
         }
@@ -142,26 +144,35 @@ namespace Example.MineSweeper
                     continue;
 
                 // queue neighbors for processing
-                var (minX, maxX) = GetAdjacentLoopBounds(coord.X, 0);
-                var (minY, maxY) = GetAdjacentLoopBounds(coord.Y, 1);
-
-                for (int ix = minX; ix <= maxX; ix++)
-                    for(int iy = minY; iy <= maxY; iy++)
+                ProcessAdjacentCells(coord.X, coord.Y,
+                    (x, y) =>
                     {
-                        // skip the current cell
-                        if (ix == coord.X & iy == coord.Y)
-                            continue;
-
-                        var other = Cells[ix, iy];
+                        var other = Cells[x, y];
 
                         // skip cells that have already been revealed
                         if (other.IsRevealed)
-                            continue;
+                            return;
 
                         // add to processing
-                        processing.Enqueue((ix, iy));
-                    }
+                        processing.Enqueue((x, y));
+                    });
             }
+        }
+
+        private void ProcessAdjacentCells(int x, int y, Action<int, int> process)
+        {
+            var (minX, maxX) = GetAdjacentLoopBounds(x, 0);
+            var (minY, maxY) = GetAdjacentLoopBounds(y, 1);
+
+            for (int ix = minX; ix <= maxX; ix++)
+                for (int iy = minY; iy <= maxY; iy++)
+                {
+                    // skip the center cell
+                    if (ix == x & iy == y)
+                        continue;
+
+                    process(ix, iy);
+                }
         }
 
         public void ToggleMark(int x, int y)
@@ -175,34 +186,5 @@ namespace Example.MineSweeper
 
             cell.IsMarked = !cell.IsMarked;
         }
-
-        
-
-
-
-
-
-
-        private void IncrementMineCountsAround(int x, int y)
-        {
-            var (minX, maxX) = GetAdjacentLoopBounds(x, 0);
-            var (minY, maxY) = GetAdjacentLoopBounds(y, 1);
-
-            for (int ix = minX; ix <= maxX; ix++)
-                for (int iy = minY; iy <= maxY; iy++)
-                {
-                    if (ix == x & iy == y)
-                        continue;
-
-                    Cells[ix, iy].MineCount++;
-                }
-        }
-
-
-
-
-
-
-
     }
 }
