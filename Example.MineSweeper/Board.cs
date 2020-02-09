@@ -132,12 +132,12 @@ namespace Example.MineSweeper
                 var coord = processing.Dequeue();
                 var cell = Cells[coord.X, coord.Y];
 
+                // skip cells that have since been revealed
                 if (cell.IsRevealed)
                     continue;
 
                 // reveal the cell
                 RevealCell(cell);
-
 
                 // reveal no further if we are near mines
                 if (cell.MineCount != 0)
@@ -147,14 +147,10 @@ namespace Example.MineSweeper
                 ProcessAdjacentCells(coord.X, coord.Y,
                     (x, y) =>
                     {
-                        var other = Cells[x, y];
-
-                        // skip cells that have already been revealed
-                        if (other.IsRevealed)
-                            return;
-
-                        // add to processing
-                        processing.Enqueue((x, y));
+                        if(!Cells[x, y].IsRevealed) // don't queue revealed cells
+                        {
+                            processing.Enqueue((x, y));
+                        }
                     });
             }
         }
