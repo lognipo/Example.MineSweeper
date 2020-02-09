@@ -18,8 +18,8 @@ namespace Example.MineSweeper
 
         public void SetPosition(int x, int y)
         {
-            X = Board.ClampX(x);
-            Y = Board.ClampY(y);
+            X = Board.WrapX(x);
+            Y = Board.WrapY(y);
         }
 
         public void MoveLeft() => SetPosition(X - 1, Y);

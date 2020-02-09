@@ -21,6 +21,7 @@ namespace Example.MineSweeper
             Clear();
 
             // status text
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor =
                 game.HasFailed ? ConsoleColor.Red
                 : game.HasWon ? ConsoleColor.Blue
@@ -28,11 +29,15 @@ namespace Example.MineSweeper
             Console.WriteLine(stateText);
 
             // board text
+            Console.CursorSize = 100;
+            Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor =
                 game.HasFailed ? ConsoleColor.Red
                 : game.HasWon ? ConsoleColor.Cyan
-                : ConsoleColor.White;
+                : ConsoleColor.DarkGray;
             Console.WriteLine(GetBoardString(game.Board));
+
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         public void Clear()

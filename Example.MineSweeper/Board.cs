@@ -176,6 +176,20 @@ namespace Example.MineSweeper
             return num;
         }
 
+
+        public int WrapX(int x) => Wrap(x, Cells.GetLength(0));
+        public int WrapY(int y) => Wrap(y, Cells.GetLength(1));
+        private int Wrap(int num, int size)
+        {
+            if (num < 0)
+                return size + (num % size);
+
+            if (num >= size)
+                return num % size;
+
+            return num;
+        }
+
         private void IncrementMineCountsAround(int x, int y)
         {
             var (minX, maxX) = GetMinMax(x, 0);
