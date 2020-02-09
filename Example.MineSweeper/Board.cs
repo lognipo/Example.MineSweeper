@@ -77,12 +77,11 @@ namespace Example.MineSweeper
             if (cell.IsRevealed)
                 return;
 
-            // reveal
-            RevealCell(cell);
-
-            // reveal until we find counts
+            
             if (cell.MineCount == 0 && !cell.HasMine)
-                RevealZeroCounts(x, y);
+                RevealZeroCounts(x, y); // reveal until we find counts
+            else
+                RevealCell(cell);       // reveal just this cell
         }
 
         public void RevealMines()
@@ -105,13 +104,16 @@ namespace Example.MineSweeper
 
         private void RevealZeroCounts(int x, int y)
         {
-            var processing = new Stack<(int X, int Y)>();
-            processing.Push((x, y));
+            var processing = new Queue<(int X, int Y)>();
+            processing.Enqueue((x, y));
 
             while(processing.Count > 0)
             {
-                var coord = processing.Pop();
+                var coord = processing.Dequeue();
                 var cell = Cells[coord.X, coord.Y];
+
+                if (cell.IsRevealed)
+                    continue;
 
                 // reveal the cell
                 RevealCell(cell);
@@ -138,7 +140,7 @@ namespace Example.MineSweeper
                             continue;
 
                         // add to processing
-                        processing.Push((ix, iy));
+                        processing.Enqueue((ix, iy));
                     }
             }
         }
