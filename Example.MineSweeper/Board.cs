@@ -102,6 +102,9 @@ namespace Example.MineSweeper
             HiddenCount--;
         }
 
+        private (int Min, int Max) GetMinMax(int num, int dim) =>
+            (Clamp(num - 1, dim), Clamp(num + 1, dim));
+
         private void RevealZeroCounts(int x, int y)
         {
             var processing = new Queue<(int X, int Y)>();
@@ -118,15 +121,16 @@ namespace Example.MineSweeper
                 // reveal the cell
                 RevealCell(cell);
 
-                // queue neighbors for processing
-                int minX = ClampX(coord.X - 1), maxX = ClampX(coord.X + 1),
-                    minY = ClampY(coord.Y - 1), maxY = ClampY(coord.Y + 1);
 
                 // reveal no further if we are near mines
                 if (cell.MineCount != 0)
                     continue;
 
-                for(int ix = minX; ix <= maxX; ix++)
+                // queue neighbors for processing
+                var (minX, maxX) = GetMinMax(coord.X, 0);
+                var (minY, maxY) = GetMinMax(coord.Y, 1);
+
+                for (int ix = minX; ix <= maxX; ix++)
                     for(int iy = minY; iy <= maxY; iy++)
                     {
                         // skip the current cell
@@ -187,8 +191,8 @@ namespace Example.MineSweeper
 
         private void IncrementMineCountsAround(int x, int y)
         {
-            int minX = ClampX(x - 1), maxX = ClampX(x + 1),
-                minY = ClampY(y - 1), maxY = ClampY(y + 1);
+            var (minX, maxX) = GetMinMax(x, 0);
+            var (minY, maxY) = GetMinMax(y, 1);
 
             for (int ix = minX; ix <= maxX; ix++)
                 for (int iy = minY; iy <= maxY; iy++)
