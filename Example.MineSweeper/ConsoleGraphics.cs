@@ -33,7 +33,6 @@ namespace Example.MineSweeper
                 : game.HasWon ? ConsoleColor.Cyan
                 : ConsoleColor.White;
             Console.WriteLine(GetBoardString(game.Board));
-
         }
 
         public void Clear()

@@ -15,18 +15,27 @@ namespace Example.MineSweeper
         public bool HasFailed { get; set; }
         public bool HasWon { get; set; }
 
+        private bool SkipRedraw { get; set; }
+
         public MineSweeperGame(IGraphics graphics, Board board)
         {
             Board = board;
             Cursor = new BoardCursor(Board);
             Graphics = graphics;
 
+            Action NoRedraw(Action action) =>
+                () =>
+                {
+                    action();
+                    SkipRedraw = true;
+                };
+
             KeyBindings = new Dictionary<ConsoleKey, Action>
             {
-                { ConsoleKey.UpArrow, Cursor.MoveUp },
-                { ConsoleKey.DownArrow, Cursor.MoveDown },
-                { ConsoleKey.LeftArrow, Cursor.MoveLeft },
-                { ConsoleKey.RightArrow, Cursor.MoveRight },
+                { ConsoleKey.UpArrow, NoRedraw(Cursor.MoveUp) },
+                { ConsoleKey.DownArrow, NoRedraw(Cursor.MoveDown) },
+                { ConsoleKey.LeftArrow, NoRedraw(Cursor.MoveLeft) },
+                { ConsoleKey.RightArrow, NoRedraw(Cursor.MoveRight) },
                 { ConsoleKey.Spacebar, Reveal },
                 { ConsoleKey.M, ToggleMark },
                 { ConsoleKey.Escape, Exit },
@@ -102,13 +111,17 @@ namespace Example.MineSweeper
             IsPlaying = true;
             while(IsPlaying)
             {
-                Graphics.Draw(this);
+                if (SkipRedraw)
+                    SkipRedraw = false;
+                else
+                    Graphics.Draw(this);
 
                 Console.SetCursorPosition(Cursor.X, Cursor.Y + Graphics.BoardOffsetY);
 
                 var key = Console.ReadKey(true).Key;
+                
 
-                if(!KeyBindings.TryGetValue(key, out Action action))
+                if (!KeyBindings.TryGetValue(key, out Action action))
                 {
                     // do nothing?
                     continue;
